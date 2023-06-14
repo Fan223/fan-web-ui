@@ -20,31 +20,54 @@
     </el-sub-menu>
 
     <!-- 没有 Children 就显示为单菜单 -->
-    <router-link
+    <el-menu-item
       v-else
-      :to="menu.path"
+      :index="menu.id"
+      @click="routerMenu(menu)"
     >
-      <el-menu-item
-        :index="menu.id"
-        @click="() => {
-          $store.state.navMenus.active = menu.id
-        }"
-      >
-        <template #title>
-          <el-icon>
-            <component :is="menu.icon" />
-          </el-icon>
-          <b> {{ menu.name }} </b>
-        </template>
-      </el-menu-item>
-    </router-link>
+      <template #title>
+        <el-icon>
+          <component :is="menu.icon" />
+        </el-icon>
+        <b> {{ menu.name }} </b>
+      </template>
+    </el-menu-item>
   </template>
 </template>
 
 <script>
+import { useRouter } from 'vue-router';
+import { useStore } from 'vuex';
+
 export default {
   name: 'ChildMenu',
   props: ['menus'],
+  setup() {
+    const store = useStore()
+    const router = useRouter()
+
+    function routerMenu(menu) {
+      if (4 === menu.type) {
+        window.open(menu.path, '_blank');
+        return;
+      }
+
+      if (store.state.navMenus.active === menu.id) {
+        return;
+      }
+
+      if ('top' === menu.postion) {
+        store.state.navMenus.active.top = menu.id
+      } else if ('left' === menu.postion) {
+        store.state.navMenus.active.aside = menu.id
+      }
+      router.push(menu.path)
+    }
+
+    return {
+      routerMenu
+    }
+  }
 }
 </script>
 

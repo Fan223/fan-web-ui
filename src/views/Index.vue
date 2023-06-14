@@ -1,7 +1,10 @@
 <template>
-  Index
+  <h1> Index </h1>
 
-  <div @click="$router.push('/layout')"> click to main </div>
+  <el-button
+    type="primary"
+    @click="$router.push('/layout')"
+  > click to main </el-button>
 </template>
 
 <script>

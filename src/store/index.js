@@ -12,7 +12,10 @@ const store = createStore({
   state: {
     navMenus: {
       isRoute: false,
-      active: '',
+      active: {
+        top: '35585005145239552',
+        aside: ''
+      },
       top: [],
       aside: []
     }

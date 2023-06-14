@@ -1,5 +1,5 @@
 <template>
-  <el-menu :default-active="$store.state.navMenus.activeName">
+  <el-menu :default-active="$store.state.navMenus.active.aside">
     <!-- 递归渲染菜单 -->
     <ChildMenu :menus="$store.state.navMenus.aside"> </ChildMenu>
   </el-menu>

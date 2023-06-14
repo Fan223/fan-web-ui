@@ -2,7 +2,7 @@ import store from '@/store'
 import axios from '@/axios'
 import { ElMessage } from 'element-plus'
 import { createRouter, createWebHistory } from 'vue-router'
-import { addRoute } from '@/assets/js/menu'
+import { dynamicRoute } from '@/assets/js/menu'
 
 const router = createRouter({
   history: createWebHistory(),
@@ -37,7 +37,7 @@ const router = createRouter({
 })
 
 // 全局前置路由守卫
-router.beforeEach((to, form, next) => {
+router.beforeEach((to, from, next) => {
   let isRoute = store.state.navMenus.isRoute
 
   if (to.path === '/login' || to.path.startsWith('/article/preview')) {
@@ -49,29 +49,46 @@ router.beforeEach((to, form, next) => {
     })
     next('/login')
   } else if (!isRoute) {
-    axios.get('/fan-web/sys/menu/listNavMenus', {
-      params: {
-        position: 'top'
+    console.log(22);
+    router.isReady().then(() => {
+      let currentRoute = router.currentRoute.value
+
+      if ('left' === currentRoute.meta.position) {
+        console.log('22-2');
+        axios.get('/fan-web/sys/menu/listTopChildMenus/' + currentRoute.meta.id).then(response => {
+          let res = response.data.data
+          store.state.navMenus.active.top = res.topMenuId
+          store.commit('SET_ASIDE_MENUS', res.childMenus)
+        })
       }
-    }).then(response => {
-      store.commit('SET_TOP_MENUS', response.data.data)
 
-      axios.get('/fan-web/sys/menu/listNavMenus').then(response => {
-        let menus = response.data.data
+      store.state.navMenus.active.aside = currentRoute.meta.id
+    })
+    axios.get('/fan-web/sys/menu/listNavMenus').then(response => {
+      let menus = response.data.data
+      store.commit('SET_TOP_MENUS', menus.top)
 
-        if (menus) {
-          // 动态绑定路由
-          menus.forEach(menu => {
-            addRoute(menu)
-          })
-          store.state.navMenus.isRoute = true
-        }
+      // 动态绑定路由
+      if (menus.aside) {
+        dynamicRoute(menus.aside)
+        store.state.navMenus.isRoute = true
+      }
 
-        // 重定向, 让 route 渲染完成
-        next(to.path)
-      })
+      // 重定向, 让 route 渲染完成
+      next(to.path)
     })
   } else {
+    console.log(11);
+    router.isReady().then(() => {
+      if ('top' === to.meta.position) {
+        console.log('11-11');
+        axios.get('/fan-web/sys/menu/listChildMenus/' + to.meta.id).then(response => {
+          console.log(response.data.data);
+          store.commit('SET_ASIDE_MENUS', response.data.data)
+        })
+      }
+    })
+
     next()
   }
 })

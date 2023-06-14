@@ -6,7 +6,7 @@
 
     <el-col :span="16">
       <el-menu
-        :default-active="$store.state.navMenus.active"
+        :default-active="$store.state.navMenus.active.top"
         mode="horizontal"
       >
         <!-- 递归渲染菜单 -->
@@ -35,5 +35,6 @@ export default {
 <style scoped>
 .el-menu {
   border: none;
+  height: 40px;
 }
 </style>

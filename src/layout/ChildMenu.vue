@@ -52,15 +52,21 @@ export default {
         return;
       }
 
-      if (store.state.navMenus.active === menu.id) {
+      if ('top' === menu.position && store.state.navMenus.active.top === menu.id) {
+        if (store.state.navMenus.active.aside) {
+          console.log('顶层父菜单即为当前激活菜单, 返回首页');
+          store.state.navMenus.active.aside = ''
+          store.state.tabs.activeName = menu.id
+          router.push(menu.path)
+        }
         return;
       }
 
-      if ('top' === menu.postion) {
-        store.state.navMenus.active.top = menu.id
-      } else if ('left' === menu.postion) {
-        store.state.navMenus.active.aside = menu.id
+      if ('left' === menu.position) {
+        store.commit('ADD_TAB', menu)
+        store.state.collapse.drawer = false
       }
+
       router.push(menu.path)
     }
 

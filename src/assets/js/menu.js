@@ -48,12 +48,12 @@ function menuToRoute(menu) {
 }
 
 // 绑定单个路由
-export function bindSingleRoute(menu, ParentRoute) {
-  let route = menuToRoute(menu)
-  if (route) {
-    router.addRoute(ParentRoute, route)
-  }
-}
+// function bindSingleRoute(menu, ParentRoute) {
+//   let route = menuToRoute(menu)
+//   if (route) {
+//     router.addRoute(ParentRoute, route)
+//   }
+// }
 
 // function checkAsideChild(menus) {
 //   let flag = false;

@@ -19,8 +19,8 @@ export default {
 
 <style scoped>
 .el-menu {
-  /* height: 100%; */
-  /* border: 1px solid red; */
+  height: 100%;
+  border: none;
 }
 a {
   text-decoration: none;

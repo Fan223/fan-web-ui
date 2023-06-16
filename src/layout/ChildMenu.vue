@@ -26,7 +26,14 @@
       @click="routerMenu(menu)"
     >
       <template #title>
-        <el-icon>
+        <el-icon
+          v-if="'top' === menu.position"
+          style="margin-left: -10px;"
+        >
+          <component :is="menu.icon" />
+        </el-icon>
+
+        <el-icon v-else>
           <component :is="menu.icon" />
         </el-icon>
         <b> {{ menu.name }} </b>

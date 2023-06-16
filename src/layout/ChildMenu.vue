@@ -47,14 +47,15 @@ export default {
     const router = useRouter()
 
     function routerMenu(menu) {
+      // 类型为链接, 直接跳转
       if (4 === menu.type) {
         window.open(menu.path, '_blank');
         return;
       }
 
+      // 菜单为顶层菜单并为当前激活的顶层菜单, 返回该菜单首页
       if ('top' === menu.position && store.state.navMenus.active.top === menu.id) {
         if (store.state.navMenus.active.aside) {
-          console.log('顶层父菜单即为当前激活菜单, 返回首页');
           store.state.navMenus.active.aside = ''
           store.state.tabs.activeName = menu.id
           router.push(menu.path)
@@ -62,7 +63,8 @@ export default {
         return;
       }
 
-      if ('left' === menu.position) {
+      // 侧栏菜单, 添加标签页
+      if ('aside' === menu.position) {
         store.commit('ADD_TAB', menu)
         store.state.collapse.drawer = false
       }
@@ -78,6 +80,11 @@ export default {
 </script>
 
 <style scoped>
+.el-sub-menu b,
+.el-menu-item b {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 a {
   text-decoration: none;
 }

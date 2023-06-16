@@ -15,7 +15,7 @@
       <Aside />
     </el-drawer>
 
-    <!-- 折叠按钮 -->
+    <!-- 侧栏折叠按钮 -->
     <el-button
       dark
       text
@@ -37,11 +37,14 @@
       </el-icon>
     </el-button>
 
+    <!-- 主体部分 -->
     <el-container
       direction="vertical"
       class="content"
     >
+      <!-- 标签页 -->
       <Tabs />
+
       <el-main>
         <router-view> </router-view>
       </el-main>

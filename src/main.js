@@ -24,6 +24,7 @@ import '@/assets/css/dark.css'
 import zhCn from 'element-plus/dist/locale/zh-cn.mjs'
 
 const app = createApp(App)
+// 全局注册 Element-Plus 图标
 for (const [key, component] of Object.entries(ElementPlusIcons)) {
   if ('Menu' === key) {
     app.component(key + 'Icon', component)

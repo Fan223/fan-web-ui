@@ -264,7 +264,7 @@ export default {
         pagination.currentPage = res.current
         pagination.pageSize = res.size
         pagination.total = res.total
-      })
+      }).catch(() => { })
     }
     pageUsers()
 

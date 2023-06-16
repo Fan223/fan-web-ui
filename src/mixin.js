@@ -1,5 +1,6 @@
 export default {
   methods: {
+    // 让按钮点击后自动失焦
     unFocus(event) {
       let target = event.target
 

@@ -24,6 +24,11 @@ const router = createRouter({
           component: () => import('@/layout/LayoutContent.vue'),
           redirect: '/blog',
           children: []
+        },
+        {
+          path: '/user/center',
+          name: 'USER_CENTER',
+          component: () => import('@/views/UserCenter.vue'),
         }
       ]
     },
@@ -45,7 +50,7 @@ const router = createRouter({
     },
     {
       path: '/article/update/:id',
-      name: 'ARTICLE_Edit',
+      name: 'ARTICLE_UPDATE',
       component: () => import('@/views/manager/blog/article/ArticleEdit.vue')
     },
     {
@@ -69,7 +74,6 @@ router.beforeEach((to, from, next) => {
     })
     next('/login')
   } else if (!isRoute) {
-    console.log('动态绑定路由');
     axios.get('/fan-web/sys/menu/listNavMenus').then(response => {
       let menus = response.data.data
       store.commit('SET_TOP_MENUS', menus.top)
@@ -82,13 +86,13 @@ router.beforeEach((to, from, next) => {
 
       // 重定向, 让 route 渲染完成
       next(to.path)
-    })
+    }).catch(() => { })
 
+    // 当前菜单为侧栏子菜单时获取其顶层父菜单及其后代菜单
     router.isReady().then(() => {
       let currentRoute = router.currentRoute.value
 
-      if ('left' === currentRoute.meta.position) {
-        console.log('通过子菜单获取顶层父菜单及其子菜单');
+      if ('aside' === currentRoute.meta.position) {
         axios.get('/fan-web/sys/menu/listTopChildMenus/' + currentRoute.meta.id).then(response => {
           let res = response.data.data
           store.state.navMenus.active.top = res.topMenuId
@@ -100,17 +104,16 @@ router.beforeEach((to, from, next) => {
             name: currentRoute.meta.title
           }
           store.commit('ADD_TAB', addTab)
-        })
+        }).catch(() => { })
       }
     })
   } else {
-    console.log('正常访问路由');
+    // 切换顶层父菜单时重新获取其子菜单
     router.isReady().then(() => {
       if ('top' === to.meta.position && store.state.navMenus.active.top !== to.meta.id) {
-        console.log('切换顶层父菜单重新获取其子菜单');
         axios.get('/fan-web/sys/menu/listChildMenus/' + to.meta.id).then(response => {
           store.commit('SET_ASIDE_MENUS', response.data.data)
-        })
+        }).catch(() => { })
 
         store.state.tabs.data = []
         store.state.navMenus.active.top = to.meta.id

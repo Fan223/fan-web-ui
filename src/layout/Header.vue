@@ -5,7 +5,7 @@
         dark
         text
         v-if="$store.state.collapse.aside"
-        @click="$router.go(0)"
+        @click="$router.push('/')"
         class="title"
       >
         <b style="font-size: 16px;"> Fan's Web </b>
@@ -30,7 +30,7 @@
       <el-menu
         :default-active="$store.state.navMenus.active.top"
         mode="horizontal"
-        class="verticalStyle"
+        class="alignStyle"
       >
         <!-- 递归渲染菜单 -->
         <ChildMenu :menus="$store.state.navMenus.top"> </ChildMenu>
@@ -46,16 +46,9 @@
 
         <template #dropdown>
           <el-dropdown-menu>
-            <el-dropdown-item @click="() => {
-              $router.push('/user/center')
-              let addTab = {
-                id: 'USER_CENTER',
-                name: '个人中心'
-              }
-              $store.commit('ADD_TAB', addTab)
-            }"> 个人中心 </el-dropdown-item>
+            <el-dropdown-item @click="routerUserCenter"> 个人中心 </el-dropdown-item>
 
-            <el-dropdown-item @click="logout"> 注销 </el-dropdown-item>
+            <el-dropdown-item @click="logout"> 注 销 </el-dropdown-item>
           </el-dropdown-menu>
         </template>
       </el-dropdown>
@@ -75,6 +68,12 @@ export default {
     const store = useStore()
     const router = useRouter()
 
+    function routerUserCenter() {
+      store.state.navMenus.active.top = ''
+      router.push('/user/center')
+    }
+
+    // 注销
     function logout() {
       localStorage.removeItem('JWT')
       store.state.tabs.data = []
@@ -82,7 +81,7 @@ export default {
     }
 
     return {
-      logout
+      routerUserCenter, logout
     }
   },
   components: {

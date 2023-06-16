@@ -45,6 +45,25 @@
           </el-select>
         </el-form-item>
         <el-form-item
+          label="位置"
+          prop="position"
+        >
+          <el-select
+            v-model="queryForm.position"
+            clearable
+            placeholder="请选择位置"
+          >
+            <el-option
+              label="顶部"
+              value="top"
+            />
+            <el-option
+              label="侧栏"
+              value="aside"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item
           label="状态"
           prop="flag"
         >
@@ -142,6 +161,23 @@
           min-width="150px"
         />
         <el-table-column
+          label="位置"
+          prop="position"
+          min-width="70px"
+        >
+          <template #default="scope">
+            <el-tag
+              v-if="scope.row.position === 'top'"
+              size="small"
+            >顶部</el-tag>
+            <el-tag
+              v-else-if="scope.row.position === 'aside'"
+              size="small"
+              type="info"
+            >侧栏</el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column
           label="路径"
           prop="path"
           align="center"
@@ -157,7 +193,7 @@
           label="组件"
           prop="component"
           align="center"
-          min-width="200px"
+          min-width="210px"
         />
         <el-table-column
           label="类型"
@@ -316,6 +352,7 @@ export default {
       let params = qs.stringify({
         name: queryForm.name,
         type: queryForm.type,
+        position: queryForm.position,
         flag: queryForm.flag
       }, { arrayFormat: 'repeat' })
 

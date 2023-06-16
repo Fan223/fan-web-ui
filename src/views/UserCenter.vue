@@ -242,6 +242,9 @@ export default {
 </script>
 
 <style scoped>
+.el-container {
+  padding: 20px;
+}
 .avatar {
   margin-left: 40px;
   position: absolute;

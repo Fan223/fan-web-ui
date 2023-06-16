@@ -33,6 +33,7 @@ export default {
     const store = useStore()
     const router = useRouter()
 
+    // 点击标签跳转路由
     function routerTab(tab) {
       let tabName = tab.props.name
       if (tabName === store.state.tabs.activeName) {
@@ -49,6 +50,7 @@ export default {
       router.push({ name: tab.props.name })
     }
 
+    // 移除标签页并跳转到邻近标签页
     function removeTab(removeName) {
       let activeTab = store.state.tabs.activeName
       let tabs = store.state.tabs.data

@@ -17,7 +17,7 @@ function bindRoute(menu) {
     } else {
       router.addRoute('LAYOUT', route)
     }
-  } else if (route && 'left' === route.meta.position) {
+  } else if (route && 'aside' === route.meta.position) {
     router.addRoute('LAYOUT_CONTENT', route)
   }
 
@@ -47,29 +47,9 @@ function menuToRoute(menu) {
   }
 }
 
-// 绑定单个路由
-// function bindSingleRoute(menu, ParentRoute) {
-//   let route = menuToRoute(menu)
-//   if (route) {
-//     router.addRoute(ParentRoute, route)
-//   }
-// }
-
-// function checkAsideChild(menus) {
-//   let flag = false;
-
-//   menus.forEach(menu => {
-//     if (check(menu)) {
-//       flag = true;
-//       return;
-//     }
-//   })
-
-//   return flag;
-// }
-
+// 检查菜单及其子菜单是否存在侧栏菜单
 function checkAsideChild(menu) {
-  if ('left' === menu.position) {
+  if ('aside' === menu.position) {
     return true;
   }
 

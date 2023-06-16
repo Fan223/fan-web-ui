@@ -22,21 +22,26 @@
       label-position="right"
       label-width="80px"
     >
-      <el-form-item
-        label="上级菜单"
-        prop="parentId"
-      >
-        <el-tree-select
-          :data="props.menus"
-          v-model="addForm.parentId"
-          placeholder="请选择上级菜单"
-          show-checkbox
-          check-strictly
-          clearable
-          node-key="id"
-          :props="{ label: 'name', children: 'children' }"
-        />
-      </el-form-item>
+      <el-row>
+        <el-col :span="12">
+          <el-form-item
+            label="上级菜单"
+            prop="parentId"
+          >
+            <el-tree-select
+              :data="props.menus"
+              v-model="addForm.parentId"
+              placeholder="请选择上级菜单"
+              show-checkbox
+              check-strictly
+              clearable
+              node-key="id"
+              :props="{ label: 'name', children: 'children' }"
+            />
+          </el-form-item>
+        </el-col>
+      </el-row>
+
       <el-row>
         <el-col :span="12">
           <el-form-item
@@ -100,16 +105,42 @@
           </template>
         </el-popover>
       </el-form-item>
-      <el-form-item
-        label="类型"
-        prop="type"
-      >
-        <el-radio-group v-model="addForm.type">
-          <el-radio :label=1>目录</el-radio>
-          <el-radio :label=2>菜单</el-radio>
-          <el-radio :label=3>按钮</el-radio>
-        </el-radio-group>
-      </el-form-item>
+
+      <el-row>
+        <el-col :span="12">
+          <el-form-item
+            label="类型"
+            prop="type"
+          >
+            <el-radio-group v-model="addForm.type">
+              <el-radio :label=1>目录</el-radio>
+              <el-radio :label=2>菜单</el-radio>
+              <el-radio :label=3>按钮</el-radio>
+            </el-radio-group>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item
+            label="位置"
+            prop="position"
+          >
+            <el-select
+              v-model="addForm.position"
+              placeholder="请选择菜单位置"
+            >
+              <el-option
+                label="顶部"
+                value="top"
+              />
+              <el-option
+                label="侧栏"
+                value="aside"
+              />
+            </el-select>
+          </el-form-item>
+        </el-col>
+      </el-row>
+
       <el-form-item
         label="状态"
         prop="flag"
@@ -139,21 +170,26 @@
       label-position="right"
       label-width="80px"
     >
-      <el-form-item
-        label="上级菜单"
-        prop="parentId"
-      >
-        <el-tree-select
-          :data="props.menus"
-          v-model="addForm.parentId"
-          placeholder="请选择上级菜单"
-          show-checkbox
-          check-strictly
-          clearable
-          node-key="id"
-          :props="{ label: 'name', children: 'children' }"
-        />
-      </el-form-item>
+      <el-row>
+        <el-col :span="12">
+          <el-form-item
+            label="上级菜单"
+            prop="parentId"
+          >
+            <el-tree-select
+              :data="props.menus"
+              v-model="addForm.parentId"
+              placeholder="请选择上级菜单"
+              show-checkbox
+              check-strictly
+              clearable
+              node-key="id"
+              :props="{ label: 'name', children: 'children' }"
+            />
+          </el-form-item>
+        </el-col>
+      </el-row>
+
       <el-row>
         <el-col :span="12">
           <el-form-item
@@ -243,16 +279,42 @@
           </template>
         </el-popover>
       </el-form-item>
-      <el-form-item
-        label="类型"
-        prop="type"
-      >
-        <el-radio-group v-model="addForm.type">
-          <el-radio :label=1>目录</el-radio>
-          <el-radio :label=2>菜单</el-radio>
-          <el-radio :label=3>按钮</el-radio>
-        </el-radio-group>
-      </el-form-item>
+
+      <el-row>
+        <el-col :span="12">
+          <el-form-item
+            label="类型"
+            prop="type"
+          >
+            <el-radio-group v-model="addForm.type">
+              <el-radio :label=1>目录</el-radio>
+              <el-radio :label=2>菜单</el-radio>
+              <el-radio :label=3>按钮</el-radio>
+            </el-radio-group>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item
+            label="位置"
+            prop="position"
+          >
+            <el-select
+              v-model="addForm.position"
+              placeholder="请选择菜单位置"
+            >
+              <el-option
+                label="顶部"
+                value="top"
+              />
+              <el-option
+                label="侧栏"
+                value="aside"
+              />
+            </el-select>
+          </el-form-item>
+        </el-col>
+      </el-row>
+
       <el-form-item
         label="状态"
         prop="flag"
@@ -283,6 +345,25 @@
       label-width="80px"
       style="width: 80%; margin: 0 auto;"
     >
+      <el-row>
+        <el-col :span="12">
+          <el-form-item
+            label="上级菜单"
+            prop="parentId"
+          >
+            <el-tree-select
+              :data="props.menus"
+              v-model="addForm.parentId"
+              placeholder="请选择上级菜单"
+              show-checkbox
+              check-strictly
+              clearable
+              node-key="id"
+              :props="{ label: 'name', children: 'children' }"
+            />
+          </el-form-item>
+        </el-col>
+      </el-row>
       <el-form-item
         label="菜单名称"
         prop="name"
@@ -303,16 +384,42 @@
           clearable
         />
       </el-form-item>
-      <el-form-item
-        label="类型"
-        prop="type"
-      >
-        <el-radio-group v-model="addForm.type">
-          <el-radio :label=1>目录</el-radio>
-          <el-radio :label=2>菜单</el-radio>
-          <el-radio :label=3>按钮</el-radio>
-        </el-radio-group>
-      </el-form-item>
+
+      <el-row>
+        <el-col :span="12">
+          <el-form-item
+            label="类型"
+            prop="type"
+          >
+            <el-radio-group v-model="addForm.type">
+              <el-radio :label=1>目录</el-radio>
+              <el-radio :label=2>菜单</el-radio>
+              <el-radio :label=3>按钮</el-radio>
+            </el-radio-group>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item
+            label="位置"
+            prop="position"
+          >
+            <el-select
+              v-model="addForm.position"
+              placeholder="请选择菜单位置"
+            >
+              <el-option
+                label="顶部"
+                value="top"
+              />
+              <el-option
+                label="侧栏"
+                value="aside"
+              />
+            </el-select>
+          </el-form-item>
+        </el-col>
+      </el-row>
+
       <el-form-item
         label="状态"
         prop="flag"
@@ -444,7 +551,7 @@ export default {
 
 <style scoped>
 .el-select {
-  width: 45%;
+  width: 100%;
 }
 :deep(.el-popover) {
   height: 250px;

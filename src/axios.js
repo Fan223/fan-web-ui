@@ -4,7 +4,7 @@ import router from "./router";
 
 
 const request = axios.create({
-  timeout: 15000,
+  timeout: 3000,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -58,6 +58,13 @@ request.interceptors.response.use(response => {
           message: '未知错误',
           type: 'error'
         })
+    }
+  } else {
+    if (error.message.includes('timeout')) {
+      ElMessage({
+        message: '请求超时',
+        type: 'error'
+      })
     }
   }
 

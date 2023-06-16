@@ -72,7 +72,7 @@ export default {
     function addArticle() {
       // eslint-disable-next-line vue/no-mutating-props
       props.form.categoryId = checkedCategory.id
-      axios.post('/fan-web/blog/article/addArticle', props.form).then(response => {
+      axios.post('/fan-web/blog/article/saveArticle', props.form).then(response => {
         if (response.data.code === 200) {
           ElMessage({
             message: '发布成功',

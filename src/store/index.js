@@ -24,7 +24,7 @@ const store = createStore({
   },
   state: {
     collapse: {
-      aside: false,
+      aside: true,
       drawer: false,
       blogHeader: true
     },

@@ -210,12 +210,24 @@
       />
     </el-col>
   </el-row>
+
+  <RoleAdd
+    :dialog="dialog"
+    @pageRoles="pageRoles"
+  />
+  <RoleUpdate
+    :dialog="dialog"
+    :updateRow="updateRow.data"
+    @pageRoles="pageRoles"
+  />
 </template>
 
 <script>
 import { inject, reactive } from 'vue'
 import qs from 'qs'
 import { ElMessage } from 'element-plus'
+import RoleAdd from './RoleAdd';
+import RoleUpdate from './RoleUpdate';
 
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
@@ -304,10 +316,13 @@ export default {
     }
 
     return {
-      queryForm, dialog, roles, pagination
+      queryForm, dialog, roles, pagination, updateRow
       , pageRoles, deleteRole, multipleSelection, handleSelectionChange, updateRole
       , handleCurrentChange, handleSizeChange
     }
+  },
+  components: {
+    RoleAdd, RoleUpdate
   }
 }
 </script>

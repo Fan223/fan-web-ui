@@ -4,8 +4,8 @@
     <el-col>
       <el-form
         :model="queryForm"
-        :inline="true"
         ref="queryFormRef"
+        inline
         label-position="right"
         label-width="70px"
         @keyup.enter="pageArticles"
@@ -21,16 +21,16 @@
           />
         </el-form-item>
         <el-form-item
-          label="分类"
+          label="文章分类"
           prop="categoryId"
         >
           <el-select
             v-model="queryForm.categoryId"
             clearable
-            placeholder="请选择分类"
+            placeholder="请选择文章分类"
           >
             <el-option
-              v-for="category in queryForm.categories"
+              v-for="category in categories.data"
               :key="category.id"
               :label="category.name"
               :value="category.id"
@@ -60,17 +60,21 @@
     </el-col>
   </el-row>
 
-  <!-- 数据结果头部 -->
+  <!-- 结果头部 -->
   <el-row>
     <el-col :span="12">
       <b style="margin-left: -20px;">查询结果</b>
     </el-col>
+
     <el-col :span="12">
       <div style="float: right;">
         <el-button
           type="primary"
           size="small"
-          @click="$router.push('/article/add')"
+          @click="(event) => { 
+            $router.push('/article/add')
+            this.unFocus(event)
+          }"
         >
           新 增
         </el-button>
@@ -96,14 +100,14 @@
     </el-col>
   </el-row>
 
-  <!-- 数据结果主体 -->
+  <!-- 结果主体 -->
   <el-row>
     <el-col>
       <el-table
         :data="articles.data"
-        max-height="390px"
         @selection-change="handleSelectionChange"
         style="margin-top: 10px;"
+        max-height="400px"
       >
         <el-table-column type="selection" />
         <el-table-column
@@ -112,11 +116,12 @@
           align="center"
           min-width="350px"
         />
+
         <el-table-column
           label="状态"
           prop="flag"
           align="center"
-          width="70px"
+          min-width="70px"
         >
           <template #default="scope">
             <el-tag
@@ -131,11 +136,19 @@
             >禁用</el-tag>
           </template>
         </el-table-column>
+
+        <el-table-column
+          label="创建时间"
+          prop="createTime"
+          align="center"
+          min-width="170px"
+        />
+
         <el-table-column
           label="操作"
           align="center"
-          min-width="260px"
           fixed="right"
+          min-width="210px"
         >
           <template #default="scope">
             <el-button
@@ -146,6 +159,7 @@
                 this.unFocus(event)
               }"
             >编 辑</el-button>
+
             <el-popconfirm
               title="确认删除吗？"
               confirm-button-text="确 认"
@@ -163,6 +177,7 @@
                 >删 除</el-button>
               </template>
             </el-popconfirm>
+
             <el-button
               type="primary"
               size="small"
@@ -205,11 +220,7 @@ export default {
     let queryForm = reactive({
     })
 
-    let multipleSelection = reactive({
-      data: []
-    })
-
-    let articles = reactive({
+    let categories = reactive({
       data: []
     })
 
@@ -218,6 +229,21 @@ export default {
       pageSize: 10,
       total: 10
     })
+
+    let articles = reactive({
+      data: []
+    })
+
+    let multipleSelection = reactive({
+      data: []
+    })
+
+    function listCategories() {
+      axios.get('/fan-web/blog/category/listCategories').then(response => {
+        categories.data = response.data.data
+      })
+    }
+    listCategories()
 
     function pageArticles() {
       let params = qs.stringify({
@@ -229,24 +255,14 @@ export default {
 
       axios.get('/fan-web/blog/article/pageArticles?' + params).then(response => {
         let res = response.data.data
+
         articles.data = res.records
         pagination.currentPage = res.current
         pagination.pageSize = res.size
         pagination.total = res.total
-      })
+      }).catch(() => { });
     }
     pageArticles()
-
-    function listCategories() {
-      axios.get('/fan-web/blog/category/listCategories').then(response => {
-        queryForm.categories = response.data.data
-      })
-    }
-    listCategories()
-
-    function handleSelectionChange(selection) {
-      multipleSelection.data = selection.map(select => select.id)
-    }
 
     function deleteArticle(id) {
       axios.delete('/fan-web/blog/article/deleteArticle/' + id).then(response => {
@@ -263,15 +279,11 @@ export default {
             type: 'error'
           })
         }
-      })
+      }).catch(() => { });
     }
 
-    function handleCurrentChange() {
-      pageArticles()
-    }
-
-    function handleSizeChange() {
-      pageArticles()
+    function handleSelectionChange(selection) {
+      multipleSelection.data = selection.map(select => select.id)
     }
 
     function updateArticle(id) {
@@ -282,10 +294,18 @@ export default {
       window.open('/article/preview/' + id, '_blank')
     }
 
+    function handleCurrentChange() {
+      pageArticles()
+    }
+
+    function handleSizeChange() {
+      pageArticles()
+    }
+
     return {
-      queryForm, multipleSelection, articles, pagination
-      , pageArticles, handleSelectionChange, deleteArticle
-      , handleCurrentChange, handleSizeChange, updateArticle, previewArticle
+      queryForm, categories, articles, pagination, pageArticles, deleteArticle
+      , multipleSelection, handleSelectionChange, updateArticle
+      , previewArticle, handleCurrentChange, handleSizeChange
     }
   },
 }

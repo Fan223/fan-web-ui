@@ -51,7 +51,7 @@ const router = createRouter({
     {
       path: '/article/update/:id',
       name: 'ARTICLE_UPDATE',
-      component: () => import('@/views/manager/blog/article/ArticleEdit.vue')
+      component: () => import('@/views/manager/blog/article/ArticleUpdate.vue')
     },
     {
       path: '/article/preview/:id',

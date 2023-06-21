@@ -1,7 +1,7 @@
 <template>
   <el-dialog
     v-model="props.dialog.update"
-    title="修改角色"
+    title="修改分类"
     width="60%"
     :close-on-click-modal="false"
     @open="updateForm.data = { ...props.updateRow }"
@@ -14,31 +14,21 @@
       label-width="80px"
     >
       <el-form-item
-        label="角色编码"
-        prop="code"
-      >
-        <el-input
-          v-model="updateForm.data.code"
-          placeholder="请输入角色编码"
-          clearable
-        />
-      </el-form-item>
-      <el-form-item
-        label="角色名称"
+        label="分类名称"
         prop="name"
       >
         <el-input
           v-model="updateForm.data.name"
-          placeholder="请输入角色名称"
+          placeholder="请输入分类名称"
           clearable
         />
       </el-form-item>
       <el-form-item
         label="备注"
-        prop="reamrk"
+        prop="remark"
       >
         <el-input
-          v-model="updateForm.data.reamrk"
+          v-model="updateForm.data.remark"
           placeholder="请输入备注"
           type="textarea"
           autosize
@@ -53,6 +43,16 @@
           <el-radio label='N'>禁用</el-radio>
         </el-radio-group>
       </el-form-item>
+      <el-form-item
+        label="排序号"
+        prop="orderNum"
+      >
+        <el-input-number
+          v-model="updateForm.data.orderNum"
+          :min="1"
+          label="排序号"
+        ></el-input-number>
+      </el-form-item>
     </el-form>
 
     <template #footer>
@@ -63,7 +63,7 @@
         >取 消</el-button>
         <el-button
           type="primary"
-          @click="updateRole"
+          @click="updateCategory"
         >
           确 认
         </el-button>
@@ -77,8 +77,8 @@ import { inject, reactive } from 'vue'
 import { ElMessage } from 'element-plus'
 
 export default {
-  name: 'RoleUpdate',
-  props: ['dialog', 'updateRow', 'pageRoles'],
+  name: 'CategoryUpdate',
+  props: ['dialog', 'updateRow', 'pageCategories'],
   setup(props, context) {
     const axios = inject('axios')
 
@@ -86,8 +86,8 @@ export default {
       data: {}
     })
 
-    function updateRole() {
-      axios.put('/fan-web/sys/role/updateRole', updateForm.data).then(response => {
+    function updateCategory() {
+      axios.put('/fan-web/blog/category/updateCategory', updateForm.data).then(response => {
         if (response.data.code === 200) {
           ElMessage({
             message: response.data.message,
@@ -95,7 +95,7 @@ export default {
           })
           // eslint-disable-next-line vue/no-mutating-props
           props.dialog.update = false
-          context.emit('pageRoles')
+          context.emit('pageCategories')
         } else {
           ElMessage({
             message: response.data.message,
@@ -106,7 +106,7 @@ export default {
     }
 
     return {
-      props, updateForm, updateRole
+      props, updateForm, updateCategory
     }
   }
 }

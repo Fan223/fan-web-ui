@@ -4,8 +4,8 @@
     <el-col>
       <el-form
         :model="queryForm"
-        :inline="true"
         ref="queryFormRef"
+        inline
         label-position="right"
         label-width="70px"
         @keyup.enter="listMenus"
@@ -41,6 +41,10 @@
             <el-option
               label="按钮"
               value="3"
+            />
+            <el-option
+              label="链接"
+              value="4"
             />
           </el-select>
         </el-form-item>
@@ -105,18 +109,19 @@
     </el-col>
   </el-row>
 
-  <!-- 数据结果头部 -->
+  <!-- 结果头部 -->
   <el-row>
     <el-col :span="12">
       <b style="margin-left: -20px;">查询结果</b>
     </el-col>
+
     <el-col :span="12">
       <div style="float: right;">
         <el-button
           type="primary"
           size="small"
           @click="(event) => { 
-            dialog.addDialogVisible = true
+            dialog.add = true
             this.unFocus(event)
           }"
         >
@@ -144,37 +149,38 @@
     </el-col>
   </el-row>
 
-  <!-- 数据结果主体 -->
+  <!-- 结果主体 -->
   <el-row>
     <el-col>
       <el-table
         :data="menus.data"
-        max-height="430px"
         row-key="id"
         @selection-change="handleSelectionChange"
         style="margin-top: 10px;"
+        max-height="400px"
       >
         <el-table-column type="selection" />
         <el-table-column
-          label="名称"
+          label="菜单名称"
           prop="name"
           min-width="150px"
         />
         <el-table-column
           label="位置"
           prop="position"
+          align="center"
           min-width="70px"
         >
           <template #default="scope">
             <el-tag
               v-if="scope.row.position === 'top'"
               size="small"
-            >顶部</el-tag>
+            > 顶部 </el-tag>
             <el-tag
               v-else-if="scope.row.position === 'aside'"
               size="small"
               type="info"
-            >侧栏</el-tag>
+            > 侧栏 </el-tag>
           </template>
         </el-table-column>
         <el-table-column
@@ -187,42 +193,48 @@
           label="权限编码"
           prop="permission"
           align="center"
-          min-width="170px"
+          min-width="140px"
         />
         <el-table-column
           label="组件"
           prop="component"
           align="center"
-          min-width="210px"
+          min-width="200px"
         />
         <el-table-column
           label="类型"
           prop="type"
           align="center"
-          width="70px"
+          min-width="70px"
         >
           <template #default="scope">
             <el-tag
               v-if="scope.row.type === 1"
               size="small"
+              type="info"
             >目录</el-tag>
             <el-tag
               v-else-if="scope.row.type === 2"
               size="small"
-              type="success"
+              type="info"
             >菜单</el-tag>
             <el-tag
               v-else-if="scope.row.type === 3"
               size="small"
               type="info"
             >按钮</el-tag>
+            <el-tag
+              v-else-if="scope.row.type === 4"
+              size="small"
+              type="info"
+            >链接</el-tag>
           </template>
         </el-table-column>
         <el-table-column
           label="图标"
           prop="icon"
           align="center"
-          width="60px"
+          min-width="60px"
         >
           <template #default="scope">
             <el-icon>
@@ -234,13 +246,14 @@
           label="排序"
           prop="orderNum"
           align="center"
-          width="60px"
+          min-width="60px"
         />
+
         <el-table-column
           label="状态"
           prop="flag"
           align="center"
-          width="70px"
+          min-width="70px"
         >
           <template #default="scope">
             <el-tag
@@ -255,17 +268,19 @@
             >禁用</el-tag>
           </template>
         </el-table-column>
+
         <el-table-column
           label="创建时间"
           prop="createTime"
           align="center"
           min-width="170px"
         />
+
         <el-table-column
           label="操作"
           align="center"
           fixed="right"
-          min-width="160px"
+          min-width="150px"
         >
           <template #default="scope">
             <el-button
@@ -276,6 +291,7 @@
                 this.unFocus(event)
               }"
             >编 辑</el-button>
+
             <el-popconfirm
               title="确认删除吗？"
               confirm-button-text="确 认"
@@ -300,47 +316,44 @@
   </el-row>
 
   <MenuAdd
-    :menus="menus.data"
     :dialog="dialog"
+    :menus="menus.data"
     @listMenus="listMenus"
   />
-  <MenuEdit
-    :menus="menus.data"
+  <MenuUpdate
     :dialog="dialog"
+    :menus="menus.data"
     :updateRow="updateRow.data"
     @listMenus="listMenus"
   />
 </template>
 
 <script>
-import { getCurrentInstance, inject, reactive } from 'vue'
+import { inject, reactive } from 'vue'
 import qs from 'qs'
 import { ElMessage } from 'element-plus'
-import MenuAdd from './MenuAdd.vue'
-import MenuEdit from './MenuEdit.vue'
-import { useStore } from 'vuex'
+import MenuAdd from './MenuAdd';
+import MenuUpdate from './MenuUpdate';
 
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
   name: 'Menu',
   setup() {
     const axios = inject('axios')
-    const store = useStore()
-    const { proxy } = getCurrentInstance()
 
     let queryForm = reactive({
     })
 
-    let dialog = reactive({
-      addDialogVisible: false,
-      editDialogVisible: false
-    })
-
-    let multipleSelection = reactive({
+    let menus = reactive({
       data: []
     })
 
-    let menus = reactive({
+    let dialog = reactive({
+      add: false,
+      update: false
+    })
+
+    let multipleSelection = reactive({
       data: []
     })
 
@@ -353,12 +366,12 @@ export default {
         name: queryForm.name,
         type: queryForm.type,
         position: queryForm.position,
-        flag: queryForm.flag
+        flag: queryForm.flag,
       }, { arrayFormat: 'repeat' })
 
       axios.get('/fan-web/sys/menu/listMenus?' + params).then(response => {
         menus.data = response.data.data.all
-      })
+      }).catch(() => { });
     }
     listMenus()
 
@@ -369,16 +382,15 @@ export default {
             message: response.data.message,
             type: 'success'
           })
+
           listMenus()
-          proxy.refreshNavMenus()
-          store.state.tabs.data = store.state.tabs.data.filter(tab => tab.name !== id)
         } else {
           ElMessage({
             message: response.data.message,
             type: 'error'
           })
         }
-      })
+      }).catch(() => { });
     }
 
     function handleSelectionChange(selection) {
@@ -386,17 +398,17 @@ export default {
     }
 
     function updateMenu(row) {
+      dialog.update = true
       updateRow.data = row
-      dialog.editDialogVisible = true
     }
 
     return {
-      queryForm, dialog, multipleSelection, menus, updateRow
-      , listMenus, deleteMenu, handleSelectionChange, updateMenu
+      queryForm, dialog, menus, updateRow
+      , listMenus, deleteMenu, multipleSelection, handleSelectionChange, updateMenu
     }
   },
   components: {
-    MenuAdd, MenuEdit
+    MenuAdd, MenuUpdate
   }
 }
 </script>

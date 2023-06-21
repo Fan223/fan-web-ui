@@ -63,7 +63,7 @@ export default {
             tip: '收起',
             tipPosition: 'n',
             click() {
-              store.state.collapse.blogHeader = !store.state.collapse.blogHeader
+              store.state.collapse.vditorHeader = !store.state.collapse.vditorHeader
             }
           },
           {
@@ -72,7 +72,7 @@ export default {
             tip: '展开',
             tipPosition: 'n',
             click() {
-              store.state.collapse.blogHeader = !store.state.collapse.blogHeader
+              store.state.collapse.vditorHeader = !store.state.collapse.vditorHeader
             }
           },
           {

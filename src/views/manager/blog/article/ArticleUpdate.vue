@@ -1,8 +1,7 @@
 <template>
-  <el-container v-show="$store.state.collapse.blogHeader">
+  <el-container v-show="$store.state.collapse.vditorHeader">
     <el-button
       :icon="ArrowLeftBold"
-      class="left"
       @click="routerArticle"
     >
       <b> 文章管理 </b>
@@ -20,14 +19,11 @@
       </el-form-item>
     </el-form>
 
-    <el-button
-      @click="(event) => {
+    <el-button @click="(event) => {
         dialog.visible = true
         updateForm.data.content = this.$refs.vditorRef.vditor.getValue()
         this.unFocus(event)
-      }"
-      class="right"
-    >
+      }">
       <b> 发布 </b>
       <el-icon class="el-icon--right">
         <Promotion />
@@ -105,33 +101,21 @@ export default {
 .el-container {
   height: 50px;
 }
-.left {
+.el-button {
   height: 100%;
   width: 120px;
   border: none;
 }
-.left:hover {
+.el-button:hover {
   background-color: #1d2025;
 }
 .el-form {
-  margin-left: 20px;
   width: 85%;
 }
 .el-form-item {
-  margin: 0;
   margin-top: 5px;
 }
 .el-input {
   height: 40px;
-}
-.right {
-  margin-left: 20px;
-  margin-right: 20px;
-  height: 100%;
-  width: 100px;
-  border: none;
-}
-.right:hover {
-  background-color: #1d2025;
 }
 </style>

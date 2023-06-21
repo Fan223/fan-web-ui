@@ -4,18 +4,18 @@
     <el-col>
       <el-form
         :model="queryForm"
-        :inline="true"
         ref="queryFormRef"
+        inline
         label-position="right"
         label-width="70px"
         @keyup.enter="pageUsers"
       >
         <el-form-item
           label="用户名"
-          prop="name"
+          prop="username"
         >
           <el-input
-            v-model="queryForm.name"
+            v-model="queryForm.username"
             clearable
             placeholder="请输入用户名"
           />
@@ -62,18 +62,19 @@
     </el-col>
   </el-row>
 
-  <!-- 数据结果头部 -->
+  <!-- 结果头部 -->
   <el-row>
     <el-col :span="12">
       <b style="margin-left: -20px;">查询结果</b>
     </el-col>
+
     <el-col :span="12">
       <div style="float: right;">
         <el-button
           type="primary"
           size="small"
           @click="(event) => { 
-            dialog.addDialogVisible = true
+            dialog.add = true
             this.unFocus(event)
           }"
         >
@@ -101,30 +102,33 @@
     </el-col>
   </el-row>
 
-  <!-- 数据结果主体 -->
+  <!-- 结果主体 -->
   <el-row>
     <el-col>
       <el-table
         :data="users.data"
-        max-height="390px"
         @selection-change="handleSelectionChange"
         style="margin-top: 10px;"
+        max-height="400px"
       >
         <el-table-column type="selection" />
         <el-table-column
           label="用户名"
           prop="username"
           align="center"
+          min-width="120px"
         />
         <el-table-column
           label="头像"
           prop="avatar"
           align="center"
+          min-width="100px"
         >
           <template #default="scope">
             <el-avatar :src="scope.row.avatar" />
           </template>
         </el-table-column>
+
         <el-table-column
           label="状态"
           prop="flag"
@@ -144,17 +148,19 @@
             >禁用</el-tag>
           </template>
         </el-table-column>
+
         <el-table-column
           label="创建时间"
           prop="createTime"
           align="center"
           min-width="170px"
         />
+
         <el-table-column
           label="操作"
           align="center"
-          min-width="160px"
           fixed="right"
+          min-width="150px"
         >
           <template #default="scope">
             <el-button
@@ -165,6 +171,7 @@
                 this.unFocus(event)
               }"
             >编 辑</el-button>
+
             <el-popconfirm
               title="确认删除吗？"
               confirm-button-text="确 认"
@@ -205,7 +212,7 @@
     :dialog="dialog"
     @pageUsers="pageUsers"
   />
-  <UserEdit
+  <UserUpdate
     :dialog="dialog"
     :updateRow="updateRow.data"
     @pageUsers="pageUsers"
@@ -215,9 +222,9 @@
 <script>
 import { inject, reactive } from 'vue'
 import qs from 'qs'
-import UserAdd from './UserAdd.vue'
-import UserEdit from './UserEdit.vue'
 import { ElMessage } from 'element-plus'
+import UserAdd from './UserAdd';
+import UserUpdate from './UserUpdate';
 
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
@@ -228,23 +235,23 @@ export default {
     let queryForm = reactive({
     })
 
-    let dialog = reactive({
-      addDialogVisible: false,
-      editDialogVisible: false
-    })
-
-    let multipleSelection = reactive({
-      data: []
+    let pagination = reactive({
+      currentPage: 1,
+      pageSize: 10,
+      total: 10
     })
 
     let users = reactive({
       data: []
     })
 
-    let pagination = reactive({
-      currentPage: 1,
-      pageSize: 10,
-      total: 10
+    let dialog = reactive({
+      add: false,
+      update: false
+    })
+
+    let multipleSelection = reactive({
+      data: []
     })
 
     let updateRow = reactive({
@@ -253,29 +260,22 @@ export default {
 
     function pageUsers() {
       let params = qs.stringify({
-        name: queryForm.name,
+        username: queryForm.username,
+        flag: queryForm.flag,
         currentPage: pagination.currentPage,
         pageSize: pagination.pageSize
       }, { arrayFormat: 'repeat' })
 
       axios.get('/fan-web/sys/user/pageUsers?' + params).then(response => {
         let res = response.data.data
+
         users.data = res.records
         pagination.currentPage = res.current
         pagination.pageSize = res.size
         pagination.total = res.total
-      }).catch(() => { })
+      }).catch(() => { });
     }
     pageUsers()
-
-    function handleSelectionChange(selection) {
-      multipleSelection.data = selection.map(select => select.id)
-    }
-
-    function updateUser(row) {
-      dialog.editDialogVisible = true
-      updateRow.data = row
-    }
 
     function deleteUser(id) {
       axios.delete('/fan-web/sys/user/deleteUser/' + id).then(response => {
@@ -292,7 +292,16 @@ export default {
             type: 'error'
           })
         }
-      })
+      }).catch(() => { });
+    }
+
+    function handleSelectionChange(selection) {
+      multipleSelection.data = selection.map(select => select.id)
+    }
+
+    function updateUser(row) {
+      dialog.update = true
+      updateRow.data = row
     }
 
     function handleCurrentChange() {
@@ -304,13 +313,13 @@ export default {
     }
 
     return {
-      queryForm, dialog, multipleSelection, users, pagination, updateRow
-      , pageUsers, handleSelectionChange, updateUser, deleteUser
+      queryForm, dialog, users, pagination, updateRow
+      , pageUsers, deleteUser, multipleSelection, handleSelectionChange, updateUser
       , handleCurrentChange, handleSizeChange
     }
   },
   components: {
-    UserAdd, UserEdit
+    UserAdd, UserUpdate
   }
 }
 </script>

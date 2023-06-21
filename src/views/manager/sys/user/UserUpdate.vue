@@ -1,9 +1,7 @@
 <template>
   <el-dialog
-    v-model="props.dialog.editDialogVisible"
-    title="修改分类"
-    draggable
-    destroy-on-close
+    v-model="props.dialog.update"
+    title="修改用户"
     width="60%"
     :close-on-click-modal="false"
     @open="updateForm.data = { ...props.updateRow }"
@@ -16,25 +14,24 @@
       label-width="80px"
     >
       <el-form-item
-        label="分类名称"
-        prop="name"
+        label="用户名"
+        prop="username"
       >
         <el-input
-          v-model="updateForm.data.name"
-          placeholder="请输入分类名称"
+          v-model="updateForm.data.username"
+          placeholder="请输入用户名"
           clearable
         />
       </el-form-item>
       <el-form-item
-        label="备注"
-        prop="remark"
+        label="密码"
+        prop="password"
       >
         <el-input
-          v-model="updateForm.data.remark"
-          placeholder="请输入备注"
+          v-model="updateForm.data.password"
+          placeholder="请输入密码"
+          show-password
           clearable
-          type="textarea"
-          autosize
         />
       </el-form-item>
       <el-form-item
@@ -52,11 +49,11 @@
       <span>
         <el-button
           type="info"
-          @click="props.dialog.editDialogVisible = false"
+          @click="props.dialog.update = false"
         >取 消</el-button>
         <el-button
           type="primary"
-          @click="updateCategory"
+          @click="updateUser"
         >
           确 认
         </el-button>
@@ -70,8 +67,8 @@ import { inject, reactive } from 'vue'
 import { ElMessage } from 'element-plus'
 
 export default {
-  name: 'CategoryEdit',
-  props: ['dialog', 'updateRow', 'pageCategories'],
+  name: 'UserUpdate',
+  props: ['dialog', 'updateRow', 'pageUsers'],
   setup(props, context) {
     const axios = inject('axios')
 
@@ -79,28 +76,27 @@ export default {
       data: {}
     })
 
-    function updateCategory() {
-      axios.put('/fan-web/blog/category/updateCategory', updateForm.data).then(response => {
+    function updateUser() {
+      axios.put('/fan-web/sys/user/updateUser', updateForm.data).then(response => {
         if (response.data.code === 200) {
           ElMessage({
             message: response.data.message,
             type: 'success'
           })
           // eslint-disable-next-line vue/no-mutating-props
-          props.dialog.editDialogVisible = false
-          context.emit('pageCategories')
+          props.dialog.update = false
+          context.emit('pageUsers')
         } else {
           ElMessage({
             message: response.data.message,
             type: 'error'
           })
         }
-      })
+      }).catch(() => { });
     }
 
     return {
-      props, updateForm
-      , updateCategory
+      props, updateForm, updateUser
     }
   }
 }

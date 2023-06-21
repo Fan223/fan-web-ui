@@ -1,9 +1,7 @@
 <template>
   <el-dialog
-    v-model="props.dialog.addDialogVisible"
+    v-model="props.dialog.add"
     title="添加分类"
-    draggable
-    destroy-on-close
     width="60%"
     :close-on-click-modal="false"
     @close="this.$refs.addFormRef.resetFields()"
@@ -31,7 +29,6 @@
         <el-input
           v-model="addForm.remark"
           placeholder="请输入备注"
-          clearable
           type="textarea"
           autosize
         />
@@ -45,13 +42,23 @@
           <el-radio label='N'>禁用</el-radio>
         </el-radio-group>
       </el-form-item>
+      <el-form-item
+        label="排序号"
+        prop="orderNum"
+      >
+        <el-input-number
+          v-model="addForm.orderNum"
+          :min="1"
+          label="排序号"
+        ></el-input-number>
+      </el-form-item>
     </el-form>
 
     <template #footer>
       <span>
         <el-button
           type="info"
-          @click="props.dialog.addDialogVisible = false"
+          @click="props.dialog.add = false"
         >取 消</el-button>
         <el-button
           type="primary"
@@ -67,14 +74,16 @@
 <script>
 import { inject, reactive } from 'vue'
 import { ElMessage } from 'element-plus'
+
 export default {
-  name: 'MenuAdd',
+  name: 'CategoryAdd',
   props: ['dialog', 'pageCategories'],
   setup(props, context) {
     const axios = inject('axios')
 
     let addForm = reactive({
-      flag: 'Y'
+      flag: 'Y',
+      orderNum: 1
     })
 
     function addCategory() {
@@ -85,7 +94,7 @@ export default {
             type: 'success'
           })
           // eslint-disable-next-line vue/no-mutating-props
-          props.dialog.addDialogVisible = false
+          props.dialog.add = false
           context.emit('pageCategories')
         } else {
           ElMessage({
@@ -93,12 +102,11 @@ export default {
             type: 'error'
           })
         }
-      })
+      }).catch(() => { });
     }
 
     return {
-      props, addForm
-      , addCategory
+      props, addForm, addCategory
     }
   }
 }

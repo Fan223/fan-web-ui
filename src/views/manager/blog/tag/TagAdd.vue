@@ -1,54 +1,32 @@
 <template>
   <el-dialog
-    v-model="props.dialog.update"
-    title="修改角色"
+    v-model="props.dialog.add"
+    title="添加标签"
     width="60%"
     :close-on-click-modal="false"
-    @open="updateForm.data = { ...props.updateRow }"
-    @close="this.$refs.updateFormRef.resetFields()"
+    @close="this.$refs.addFormRef.resetFields()"
   >
     <el-form
-      :model="updateForm.data"
-      ref="updateFormRef"
+      :model="addForm"
+      ref="addFormRef"
       label-position="right"
       label-width="80px"
     >
       <el-form-item
-        label="角色编码"
-        prop="code"
-      >
-        <el-input
-          v-model="updateForm.data.code"
-          placeholder="请输入角色编码"
-          clearable
-        />
-      </el-form-item>
-      <el-form-item
-        label="角色名称"
+        label="标签名称"
         prop="name"
       >
         <el-input
-          v-model="updateForm.data.name"
-          placeholder="请输入角色名称"
+          v-model="addForm.name"
+          placeholder="请输入标签名称"
           clearable
-        />
-      </el-form-item>
-      <el-form-item
-        label="备注"
-        prop="reamrk"
-      >
-        <el-input
-          v-model="updateForm.data.reamrk"
-          placeholder="请输入备注"
-          type="textarea"
-          autosize
         />
       </el-form-item>
       <el-form-item
         label="状态"
         prop="flag"
       >
-        <el-radio-group v-model="updateForm.data.flag">
+        <el-radio-group v-model="addForm.flag">
           <el-radio label='Y'>正常</el-radio>
           <el-radio label='N'>禁用</el-radio>
         </el-radio-group>
@@ -59,11 +37,11 @@
       <span>
         <el-button
           type="info"
-          @click="props.dialog.update = false"
+          @click="props.dialog.add = false"
         >取 消</el-button>
         <el-button
           type="primary"
-          @click="updateRole"
+          @click="addTag"
         >
           确 认
         </el-button>
@@ -77,25 +55,25 @@ import { inject, reactive } from 'vue'
 import { ElMessage } from 'element-plus'
 
 export default {
-  name: 'RoleUpdate',
-  props: ['dialog', 'updateRow', 'pageRoles'],
+  name: 'TagAdd',
+  props: ['dialog', 'pageTags'],
   setup(props, context) {
     const axios = inject('axios')
 
-    let updateForm = reactive({
-      data: {}
+    let addForm = reactive({
+      flag: 'Y'
     })
 
-    function updateRole() {
-      axios.put('/fan-web/sys/role/updateRole', updateForm.data).then(response => {
+    function addTag() {
+      axios.post('/fan-web/blog/tag/addTag', addForm).then(response => {
         if (response.data.code === 200) {
           ElMessage({
             message: response.data.message,
             type: 'success'
           })
           // eslint-disable-next-line vue/no-mutating-props
-          props.dialog.update = false
-          context.emit('pageRoles')
+          props.dialog.add = false
+          context.emit('pageTags')
         } else {
           ElMessage({
             message: response.data.message,
@@ -106,7 +84,7 @@ export default {
     }
 
     return {
-      props, updateForm, updateRole
+      props, addForm, addTag
     }
   }
 }

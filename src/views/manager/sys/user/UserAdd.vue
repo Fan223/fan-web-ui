@@ -1,9 +1,7 @@
 <template>
   <el-dialog
-    v-model="props.dialog.addDialogVisible"
+    v-model="props.dialog.add"
     title="添加用户"
-    draggable
-    destroy-on-close
     width="60%"
     :close-on-click-modal="false"
     @close="this.$refs.addFormRef.resetFields()"
@@ -30,8 +28,8 @@
       >
         <el-input
           v-model="addForm.password"
-          show-password
           placeholder="请输入密码"
+          show-password
           clearable
         />
       </el-form-item>
@@ -50,7 +48,7 @@
       <span>
         <el-button
           type="info"
-          @click="props.dialog.addDialogVisible = false"
+          @click="props.dialog.add = false"
         >取 消</el-button>
         <el-button
           type="primary"
@@ -66,6 +64,7 @@
 <script>
 import { inject, reactive } from 'vue'
 import { ElMessage } from 'element-plus'
+
 export default {
   name: 'UserAdd',
   props: ['dialog', 'pageUsers'],
@@ -73,7 +72,8 @@ export default {
     const axios = inject('axios')
 
     let addForm = reactive({
-      flag: 'Y'
+      flag: 'Y',
+      password: '123456'
     })
 
     function addUser() {
@@ -84,7 +84,7 @@ export default {
             type: 'success'
           })
           // eslint-disable-next-line vue/no-mutating-props
-          props.dialog.addDialogVisible = false
+          props.dialog.add = false
           context.emit('pageUsers')
         } else {
           ElMessage({
@@ -92,12 +92,11 @@ export default {
             type: 'error'
           })
         }
-      })
+      }).catch(() => { });
     }
 
     return {
-      props, addForm
-      , addUser
+      props, addForm, addUser
     }
   }
 }

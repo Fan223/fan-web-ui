@@ -1,9 +1,7 @@
 <template>
   <el-dialog
-    v-model="props.dialog.editDialogVisible"
-    title="修改用户"
-    draggable
-    destroy-on-close
+    v-model="props.dialog.update"
+    title="修改标签"
     width="60%"
     :close-on-click-modal="false"
     @open="updateForm.data = { ...props.updateRow }"
@@ -16,23 +14,12 @@
       label-width="80px"
     >
       <el-form-item
-        label="用户名"
-        prop="username"
+        label="标签名称"
+        prop="name"
       >
         <el-input
-          v-model="updateForm.data.username"
-          placeholder="请输入用户名"
-          clearable
-        />
-      </el-form-item>
-      <el-form-item
-        label="密码"
-        prop="password"
-      >
-        <el-input
-          v-model="updateForm.data.password"
-          show-password
-          placeholder="请输入密码"
+          v-model="updateForm.data.name"
+          placeholder="请输入标签名称"
           clearable
         />
       </el-form-item>
@@ -51,11 +38,11 @@
       <span>
         <el-button
           type="info"
-          @click="props.dialog.editDialogVisible = false"
+          @click="props.dialog.update = false"
         >取 消</el-button>
         <el-button
           type="primary"
-          @click="updateUser"
+          @click="updateTag"
         >
           确 认
         </el-button>
@@ -69,8 +56,8 @@ import { inject, reactive } from 'vue'
 import { ElMessage } from 'element-plus'
 
 export default {
-  name: 'UserEdit',
-  props: ['dialog', 'updateRow', 'pageUsers'],
+  name: 'TagUpdate',
+  props: ['dialog', 'updateRow', 'pageTags'],
   setup(props, context) {
     const axios = inject('axios')
 
@@ -78,28 +65,27 @@ export default {
       data: {}
     })
 
-    function updateUser() {
-      axios.put('/fan-web/sys/user/updateUser', updateForm.data).then(response => {
+    function updateTag() {
+      axios.put('/fan-web/blog/tag/updateTag', updateForm.data).then(response => {
         if (response.data.code === 200) {
           ElMessage({
             message: response.data.message,
             type: 'success'
           })
           // eslint-disable-next-line vue/no-mutating-props
-          props.dialog.editDialogVisible = false
-          context.emit('pageUsers')
+          props.dialog.update = false
+          context.emit('pageTags')
         } else {
           ElMessage({
             message: response.data.message,
             type: 'error'
           })
         }
-      })
+      }).catch(() => { });
     }
 
     return {
-      props, updateForm
-      , updateUser
+      props, updateForm, updateTag
     }
   }
 }

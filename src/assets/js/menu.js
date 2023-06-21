@@ -33,10 +33,14 @@ function menuToRoute(menu) {
   if (!menu.component) {
     return null;
   } else {
+    let arr = menu.component.split('/')
+    let folderName = arr[arr.length - 1]
+    let fileName = folderName.slice(0, 1).toUpperCase() + folderName.slice(1).toLowerCase()
+
     return {
       name: menu.id,
       path: menu.path,
-      component: () => import('@/views' + menu.component + '.vue'),
+      component: () => import('@/views' + menu.component + '/' + fileName + '.vue'),
       meta: {
         id: menu.id,
         title: menu.name,

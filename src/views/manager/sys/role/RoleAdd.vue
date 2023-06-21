@@ -13,22 +13,22 @@
       label-width="80px"
     >
       <el-form-item
-        label="编码"
+        label="角色编码"
         prop="code"
       >
         <el-input
           v-model="addForm.code"
-          placeholder="请输入编码"
+          placeholder="请输入角色编码"
           clearable
         />
       </el-form-item>
       <el-form-item
-        label="用户名"
+        label="角色名称"
         prop="name"
       >
         <el-input
           v-model="addForm.name"
-          placeholder="请输入角色名"
+          placeholder="请输入角色名称"
           clearable
         />
       </el-form-item>

@@ -4,8 +4,8 @@
     <el-col>
       <el-form
         :model="queryForm"
-        :inline="true"
         ref="queryFormRef"
+        inline
         label-position="right"
         label-width="70px"
         @keyup.enter="pageCategories"
@@ -62,7 +62,7 @@
     </el-col>
   </el-row>
 
-  <!-- 数据结果头部 -->
+  <!-- 结果头部 -->
   <el-row>
     <el-col :span="12">
       <b style="margin-left: -20px;">查询结果</b>
@@ -74,7 +74,7 @@
           type="primary"
           size="small"
           @click="(event) => { 
-            dialog.addDialogVisible = true
+            dialog.add = true
             this.unFocus(event)
           }"
         >
@@ -102,18 +102,18 @@
     </el-col>
   </el-row>
 
-  <!-- 数据结果主体 -->
+  <!-- 结果主体 -->
   <el-row>
     <el-col>
       <el-table
         :data="categories.data"
-        max-height="390px"
         @selection-change="handleSelectionChange"
         style="margin-top: 10px;"
+        max-height="400px"
       >
         <el-table-column type="selection" />
         <el-table-column
-          label="名称"
+          label="分类名称"
           prop="name"
           align="center"
           min-width="130px"
@@ -122,8 +122,15 @@
           label="备注"
           prop="remark"
           align="center"
-          min-width="200px"
+          min-width="220px"
         />
+        <el-table-column
+          label="排序"
+          prop="orderNum"
+          align="center"
+          min-width="60px"
+        />
+
         <el-table-column
           label="状态"
           prop="flag"
@@ -143,17 +150,19 @@
             >禁用</el-tag>
           </template>
         </el-table-column>
+
         <el-table-column
           label="创建时间"
           prop="createTime"
           align="center"
           min-width="170px"
         />
+
         <el-table-column
           label="操作"
           align="center"
-          min-width="160px"
           fixed="right"
+          min-width="150px"
         >
           <template #default="scope">
             <el-button
@@ -164,6 +173,7 @@
                 this.unFocus(event)
               }"
             >编 辑</el-button>
+
             <el-popconfirm
               title="确认删除吗？"
               confirm-button-text="确 认"
@@ -204,7 +214,7 @@
     :dialog="dialog"
     @pageCategories="pageCategories"
   />
-  <CategoryEdit
+  <CategoryUpdate
     :dialog="dialog"
     :updateRow="updateRow.data"
     @pageCategories="pageCategories"
@@ -214,9 +224,9 @@
 <script>
 import { inject, reactive } from 'vue'
 import qs from 'qs'
-import CategoryAdd from './CategoryAdd.vue'
-import CategoryEdit from './CategoryEdit.vue'
 import { ElMessage } from 'element-plus'
+import CategoryAdd from './CategoryAdd';
+import CategoryUpdate from './CategoryUpdate';
 
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
@@ -227,23 +237,23 @@ export default {
     let queryForm = reactive({
     })
 
-    let dialog = reactive({
-      addDialogVisible: false,
-      editDialogVisible: false
-    })
-
-    let multipleSelection = reactive({
-      data: []
+    let pagination = reactive({
+      currentPage: 1,
+      pageSize: 10,
+      total: 10
     })
 
     let categories = reactive({
       data: []
     })
 
-    let pagination = reactive({
-      currentPage: 1,
-      pageSize: 10,
-      total: 10
+    let dialog = reactive({
+      add: false,
+      update: false
+    })
+
+    let multipleSelection = reactive({
+      data: []
     })
 
     let updateRow = reactive({
@@ -253,28 +263,21 @@ export default {
     function pageCategories() {
       let params = qs.stringify({
         name: queryForm.name,
+        flag: queryForm.flag,
         currentPage: pagination.currentPage,
         pageSize: pagination.pageSize
       }, { arrayFormat: 'repeat' })
 
       axios.get('/fan-web/blog/category/pageCategories?' + params).then(response => {
         let res = response.data.data
+
         categories.data = res.records
         pagination.currentPage = res.current
         pagination.pageSize = res.size
         pagination.total = res.total
-      })
+      }).catch(() => { });
     }
     pageCategories()
-
-    function handleSelectionChange(selection) {
-      multipleSelection.data = selection.map(select => select.id)
-    }
-
-    function updateCategory(row) {
-      dialog.editDialogVisible = true
-      updateRow.data = row
-    }
 
     function deleteCategory(id) {
       axios.delete('/fan-web/blog/category/deleteCategory/' + id).then(response => {
@@ -291,7 +294,16 @@ export default {
             type: 'error'
           })
         }
-      })
+      }).catch(() => { });
+    }
+
+    function handleSelectionChange(selection) {
+      multipleSelection.data = selection.map(select => select.id)
+    }
+
+    function updateCategory(row) {
+      dialog.update = true
+      updateRow.data = row
     }
 
     function handleCurrentChange() {
@@ -303,13 +315,13 @@ export default {
     }
 
     return {
-      queryForm, dialog, multipleSelection, categories, pagination, updateRow
-      , pageCategories, handleSelectionChange, updateCategory, deleteCategory
+      queryForm, dialog, categories, pagination, updateRow
+      , pageCategories, deleteCategory, multipleSelection, handleSelectionChange, updateCategory
       , handleCurrentChange, handleSizeChange
     }
   },
   components: {
-    CategoryAdd, CategoryEdit
+    CategoryAdd, CategoryUpdate
   }
 }
 </script>

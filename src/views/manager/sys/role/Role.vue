@@ -17,7 +17,7 @@
           <el-input
             v-model="queryForm.name"
             clearable
-            placeholder="请输入角色名"
+            placeholder="请输入角色名称"
           />
         </el-form-item>
         <el-form-item
@@ -113,13 +113,13 @@
       >
         <el-table-column type="selection" />
         <el-table-column
-          label="编码"
+          label="角色编码"
           prop="code"
           align="center"
           min-width="100px"
         />
         <el-table-column
-          label="角色名"
+          label="角色名称"
           prop="name"
           align="center"
           min-width="120px"

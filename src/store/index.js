@@ -26,7 +26,7 @@ const store = createStore({
     collapse: {
       aside: true,
       drawer: false,
-      blogHeader: true
+      vditorHeader: true
     },
     navMenus: {
       isRoute: false,

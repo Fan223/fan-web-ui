@@ -2,9 +2,7 @@
   <el-dialog
     v-model="props.dialog.visible"
     title="发布文章"
-    draggable
-    destroy-on-close
-    width="50%"
+    width="60%"
     :close-on-click-modal="false"
   >
     <el-checkbox-group

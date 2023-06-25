@@ -91,19 +91,24 @@ router.beforeEach((to, from, next) => {
     // 当前菜单为侧栏子菜单时获取其顶层父菜单及其后代菜单
     router.isReady().then(() => {
       let currentRoute = router.currentRoute.value
+      let flag = 'ARTICLE_ADD' === currentRoute.name || 'ARTICLE_UPDATE' === currentRoute.name;
 
-      if ('aside' === currentRoute.meta.position) {
-        axios.get('/fan-web/sys/menu/listTopChildMenus/' + currentRoute.meta.id).then(response => {
+      if ('aside' === currentRoute.meta.position || flag) {
+        let id = flag ? '10138300571021312' : currentRoute.meta.id
+
+        axios.get('/fan-web/sys/menu/listTopChildMenus/' + id).then(response => {
           let res = response.data.data
           store.state.navMenus.active.top = res.topMenuId
           store.state.tabs.home.name = res.topMenuId
           store.commit('SET_ASIDE_MENUS', res.childMenus)
 
-          let addTab = {
-            id: currentRoute.meta.id,
-            name: currentRoute.meta.title
+          if (!flag) {
+            let addTab = {
+              id: currentRoute.meta.id,
+              name: currentRoute.meta.title
+            }
+            store.commit('ADD_TAB', addTab)
           }
-          store.commit('ADD_TAB', addTab)
         }).catch(() => { })
       }
     })

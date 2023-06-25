@@ -1,14 +1,14 @@
 <template>
-  <div style="padding: 20px">
+  <div style="padding: 20px 40px;">
     <!-- 查询表单 -->
     <el-row>
       <el-col>
         <el-form
           :model="queryForm"
-          :inline="true"
           ref="queryFormRef"
+          inline
           label-position="right"
-          label-width="40px"
+          label-width="70px"
           @keyup.enter="pageWords"
         >
           <el-form-item
@@ -35,6 +35,7 @@
               placeholder="请输入中文"
             />
           </el-form-item>
+
           <el-form-item
             label="状态"
             prop="flag"
@@ -85,7 +86,7 @@
       </el-col>
     </el-row>
 
-    <!-- 数据结果头部 -->
+    <!-- 结果头部 -->
     <el-row>
       <el-col :span="12">
         <b style="margin-left: -20px;">查询结果</b>
@@ -97,7 +98,7 @@
             type="primary"
             size="small"
             @click="(event) => { 
-            dialog.addDialogVisible = true
+            dialog.add = true
             this.unFocus(event)
           }"
           >
@@ -125,14 +126,14 @@
       </el-col>
     </el-row>
 
-    <!-- 数据结果主体 -->
+    <!-- 结果主体 -->
     <el-row>
       <el-col>
         <el-table
           :data="words.data"
-          max-height="390px"
           @selection-change="handleSelectionChange"
           style="margin-top: 10px;"
+          max-height="400px"
         >
           <el-table-column type="selection" />
           <el-table-column
@@ -160,6 +161,23 @@
             min-width="521px"
             show-overflow-tooltip
           />
+
+          <el-table-column
+            label="类型"
+            prop="type"
+            align="center"
+            min-width="100px"
+          >
+            <template #default="scope">
+              <el-tag
+                size="small"
+                type="info"
+              >
+                {{ scope.row.type  + '' }}
+              </el-tag>
+            </template>
+          </el-table-column>
+
           <el-table-column
             label="状态"
             prop="flag"
@@ -189,11 +207,12 @@
               >陌生</el-tag>
             </template>
           </el-table-column>
+
           <el-table-column
             label="操作"
             align="center"
-            min-width="220px"
             fixed="right"
+            min-width="210px"
           >
             <template #default="scope">
               <el-button
@@ -204,6 +223,7 @@
                 this.unFocus(event)
               }"
               >编 辑</el-button>
+
               <el-popconfirm
                 title="确认删除吗？"
                 confirm-button-text="确 认"
@@ -221,6 +241,7 @@
                   >删 除</el-button>
                 </template>
               </el-popconfirm>
+
               <el-button
                 type="info"
                 size="small"
@@ -247,30 +268,30 @@
         />
       </el-col>
     </el-row>
-  </div>
 
-  <WordAdd
-    :dialog="dialog"
-    @pageWords="pageWords"
-  />
-  <WordEdit
-    :dialog="dialog"
-    :updateRow="updateRow.data"
-    @pageWords="pageWords"
-  />
-  <WordDetail
-    :dialog="dialog"
-    :detailRow="detailRow.data"
-  />
+    <WordAdd
+      :dialog="dialog"
+      @pageWords="pageWords"
+    />
+    <WordUpdate
+      :dialog="dialog"
+      :updateRow="updateRow.data"
+      @pageWords="pageWords"
+    />
+    <WordDetail
+      :dialog="dialog"
+      :detailRow="detailRow.data"
+    />
+  </div>
 </template>
 
 <script>
 import { inject, reactive } from 'vue'
 import qs from 'qs'
-import WordAdd from './WordAdd.vue'
-import WordEdit from './WordEdit.vue'
-import WordDetail from './WordDetail.vue'
 import { ElMessage } from 'element-plus'
+import WordAdd from './WordAdd';
+import WordUpdate from './WordUpdate';
+import WordDetail from './WordDetail';
 
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
@@ -281,24 +302,24 @@ export default {
     let queryForm = reactive({
     })
 
-    let words = reactive({
-      data: []
-    })
-
     let pagination = reactive({
       currentPage: 1,
       pageSize: 10,
       total: 10
     })
 
-    let multipleSelection = reactive({
+    let words = reactive({
       data: []
     })
 
     let dialog = reactive({
-      addDialogVisible: false,
-      editDialogVisible: false,
-      detailDialogVisible: false
+      add: false,
+      update: false,
+      detail: false
+    })
+
+    let multipleSelection = reactive({
+      data: []
     })
 
     let updateRow = reactive({
@@ -308,6 +329,30 @@ export default {
     let detailRow = reactive({
       data: {}
     })
+
+    let timeout
+    function queryEn(queryString, cb) {
+      clearTimeout(timeout)
+
+      timeout = setTimeout(() => {
+        if (queryForm.en) {
+          axios.get('/fan-web/word/listWords/' + queryForm.en).then(response => {
+            let results = queryString
+              ? response.data.data.filter(createFilter(queryString))
+              : response.data.data
+            cb(results)
+          }).catch(() => { })
+        }
+      }, 500 * Math.random())
+    }
+
+    function createFilter(queryString) {
+      return (item) => {
+        return (
+          item.en.toLowerCase().indexOf(queryString.toLowerCase()) === 0
+        )
+      }
+    }
 
     function pageWords() {
       let params = qs.stringify({
@@ -320,35 +365,14 @@ export default {
 
       axios.get('/fan-web/word/pageWords?' + params).then(response => {
         let res = response.data.data
+
         words.data = res.records
         pagination.currentPage = res.current
         pagination.pageSize = res.size
         pagination.total = res.total
-      })
+      }).catch(() => { });
     }
     pageWords()
-
-    function handleSelectionChange(selection) {
-      multipleSelection.data = selection.map(select => select.id)
-    }
-
-    function handleCurrentChange() {
-      pageWords()
-    }
-
-    function handleSizeChange() {
-      pageWords()
-    }
-
-    function updateWord(row) {
-      dialog.editDialogVisible = true
-      updateRow.data = row
-    }
-
-    function detailWord(row) {
-      dialog.detailDialogVisible = true
-      detailRow.data = row
-    }
 
     function deleteWord(id) {
       axios.delete('/fan-web/word/deleteWord/' + id).then(response => {
@@ -365,42 +389,39 @@ export default {
             type: 'error'
           })
         }
-      })
+      }).catch(() => { });
     }
 
-    let timeout
-    function queryEn(queryString, cb) {
-      clearTimeout(timeout)
-
-      timeout = setTimeout(() => {
-        if (queryForm.en) {
-          axios.get('/fan-web/word/listWords/' + queryForm.en).then(response => {
-            let results = queryString
-              ? response.data.data.filter(createFilter(queryString))
-              : response.data.data
-            cb(results)
-          })
-        }
-      }, 500 * Math.random())
-
+    function handleSelectionChange(selection) {
+      multipleSelection.data = selection.map(select => select.id)
     }
 
-    function createFilter(queryString) {
-      return (item) => {
-        return (
-          item.en.toLowerCase().indexOf(queryString.toLowerCase()) === 0
-        )
-      }
+    function updateWord(row) {
+      dialog.update = true
+      updateRow.data = row
+    }
+
+    function detailWord(row) {
+      dialog.detail = true
+      detailRow.data = row
+    }
+
+    function handleCurrentChange() {
+      pageWords()
+    }
+
+    function handleSizeChange() {
+      pageWords()
     }
 
     return {
-      queryForm, words, multipleSelection, pagination, dialog, updateRow, detailRow
-      , pageWords, handleSelectionChange, handleCurrentChange, handleSizeChange
-      , updateWord, deleteWord, detailWord, queryEn
+      queryForm, dialog, words, pagination, updateRow, detailRow
+      , queryEn, pageWords, deleteWord, multipleSelection, handleSelectionChange
+      , updateWord, detailWord, handleCurrentChange, handleSizeChange
     }
   },
   components: {
-    WordAdd, WordEdit, WordDetail
+    WordAdd, WordUpdate, WordDetail
   }
 }
 </script>
@@ -409,8 +430,5 @@ export default {
 .el-form .el-input,
 .el-form .el-select {
   width: 200px;
-}
-:deep(.el-input__wrapper) {
-  width: 180px;
 }
 </style>

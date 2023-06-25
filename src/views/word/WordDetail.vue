@@ -1,9 +1,7 @@
 <template>
   <el-dialog
-    v-model="props.dialog.detailDialogVisible"
+    v-model="props.dialog.detail"
     title="单词详情"
-    draggable
-    destroy-on-close
     width="60%"
     :close-on-click-modal="false"
   >
@@ -40,9 +38,8 @@
         <el-input
           v-model="props.detailRow.cn"
           placeholder="请输入中文"
-          clearable
           type="textarea"
-          autosize=""
+          autosize
         />
       </el-form-item>
       <el-form-item
@@ -82,5 +79,9 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
+.el-form {
+  width: 80%;
+  margin: 0 auto;
+}
 </style>

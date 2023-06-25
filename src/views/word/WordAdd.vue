@@ -1,9 +1,7 @@
 <template>
   <el-dialog
-    v-model="props.dialog.addDialogVisible"
+    v-model="props.dialog.add"
     title="添加单词"
-    draggable
-    destroy-on-close
     width="60%"
     :close-on-click-modal="false"
     @close="this.$refs.addFormRef.resetFields()"
@@ -41,7 +39,6 @@
         <el-input
           v-model="addForm.cn"
           placeholder="请输入中文"
-          clearable
           type="textarea"
           autosize
         />
@@ -73,7 +70,7 @@
       <span>
         <el-button
           type="info"
-          @click="props.dialog.addDialogVisible = false"
+          @click="props.dialog.add = false"
         >取 消</el-button>
         <el-button
           type="primary"
@@ -109,7 +106,7 @@ export default {
             type: 'success'
           })
           // eslint-disable-next-line vue/no-mutating-props
-          props.dialog.addDialogVisible = false
+          props.dialog.add = false
           context.emit('pageWords')
         } else {
           ElMessage({
@@ -117,7 +114,7 @@ export default {
             type: 'error'
           })
         }
-      })
+      }).catch(() => { });
     }
 
     return {
@@ -128,7 +125,8 @@ export default {
 </script>
 
 <style scoped>
-.el-checkbox {
-  margin-right: 20px;
+.el-form {
+  width: 80%;
+  margin: 0 auto;
 }
 </style>

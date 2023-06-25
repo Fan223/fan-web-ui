@@ -1,9 +1,7 @@
 <template>
   <el-dialog
-    v-model="props.dialog.editDialogVisible"
-    title="修改单词"
-    draggable
-    destroy-on-close
+    v-model="props.dialog.update"
+    title="修改角色"
     width="60%"
     :close-on-click-modal="false"
     @open="updateForm.data = { ...props.updateRow }"
@@ -42,9 +40,8 @@
         <el-input
           v-model="updateForm.data.cn"
           placeholder="请输入中文"
-          clearable
           type="textarea"
-          autosize=""
+          autosize
         />
       </el-form-item>
       <el-form-item
@@ -74,7 +71,7 @@
       <span>
         <el-button
           type="info"
-          @click="props.dialog.editDialogVisible = false"
+          @click="props.dialog.update = false"
         >取 消</el-button>
         <el-button
           type="primary"
@@ -92,7 +89,7 @@ import { inject, reactive } from 'vue'
 import { ElMessage } from 'element-plus'
 
 export default {
-  name: 'WordEdit',
+  name: 'WordUpdate',
   props: ['dialog', 'updateRow', 'pageWords'],
   setup(props, context) {
     const axios = inject('axios')
@@ -109,7 +106,7 @@ export default {
             type: 'success'
           })
           // eslint-disable-next-line vue/no-mutating-props
-          props.dialog.editDialogVisible = false
+          props.dialog.update = false
           context.emit('pageWords')
         } else {
           ElMessage({
@@ -117,7 +114,7 @@ export default {
             type: 'error'
           })
         }
-      })
+      }).catch(() => { });
     }
 
     return {
@@ -127,5 +124,9 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
+.el-form {
+  width: 80%;
+  margin: 0 auto;
+}
 </style>

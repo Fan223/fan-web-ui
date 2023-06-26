@@ -51,7 +51,7 @@ export default {
             axios.get('/fan-web/blog/article/getArticle/' + router.currentRoute.value.params.id).then(response => {
               vditor.value.setValue(response.data.data.content)
               vditor.value.vditor.toolbar.elements.preview.firstElementChild.dispatchEvent(new CustomEvent("click"))
-            })
+            }).catch(() => { })
           })
         }
       })

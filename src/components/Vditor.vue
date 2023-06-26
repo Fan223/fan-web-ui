@@ -11,7 +11,7 @@ import { useStore } from 'vuex';
 
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
-  name: 'Index',
+  name: 'Vditor',
   props: ['form'],
   setup(props) {
     const axios = inject('axios')
@@ -54,7 +54,7 @@ export default {
                     type: 'error'
                   })
                 }
-              })
+              }).catch(() => { })
             }
           },
           {

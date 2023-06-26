@@ -431,4 +431,7 @@ export default {
 .el-form .el-select {
   width: 200px;
 }
+:deep(.el-input__wrapper) {
+  width: 180px;
+}
 </style>

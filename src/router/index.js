@@ -58,11 +58,6 @@ const router = createRouter({
       name: 'ARTICLE_PREVIEW',
       component: () => import('@/components/Preview.vue')
     },
-    {
-      path: '/article/render',
-      name: 'ARTICLE_RENDER',
-      component: () => import('@/components/Render.vue')
-    },
   ],
 })
 

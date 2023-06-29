@@ -689,7 +689,7 @@ export default {
       if (addForm.type !== 2) {
         addForm.component = null
       }
-      if (addForm.type !== 4) {
+      if (addForm.type !== 4 && addForm.type !== 2) {
         addForm.path = null
       }
       if (addForm.icon === 3) {

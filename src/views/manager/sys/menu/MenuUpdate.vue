@@ -688,7 +688,7 @@ export default {
       if (updateForm.data.type !== 2) {
         updateForm.data.component = null
       }
-      if (updateForm.data.type !== 4) {
+      if (updateForm.data.type !== 4 && updateForm.data.type !== 2) {
         updateForm.data.path = null
       }
       if (updateForm.data.icon === 3) {

@@ -58,6 +58,11 @@ const router = createRouter({
       name: 'ARTICLE_PREVIEW',
       component: () => import('@/components/Preview.vue')
     },
+    {
+      path: '/tool/format',
+      name: 'TOOL_FORMAT',
+      component: () => import('@/views/tool/Format.vue')
+    }
   ],
 })
 

@@ -27,7 +27,7 @@
     >
       <template #title>
         <el-icon
-          v-if="'top' === menu.position"
+          v-if="'top' === menu.position && !menu.parentId"
           style="margin-left: -10px;"
         >
           <component :is="menu.icon" />

@@ -41,7 +41,7 @@ export default {
           }
         }).then(response => {
           if (response.data.code === 200) {
-            history.value += current.value + response.data.data + '\n'
+            history.value += current.value + 'result: ' + response.data.data + '\n'
             current.value = ''
           } else {
             ElMessage({
@@ -63,7 +63,7 @@ export default {
 <style scoped>
 .history {
   width: 100%;
-  height: 400px;
+  height: 80%;
   box-shadow: 0 0 0 3px #0a0a0a;
   white-space: pre-wrap;
 }

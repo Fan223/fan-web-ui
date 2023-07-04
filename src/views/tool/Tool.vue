@@ -10,12 +10,24 @@
           </template>
 
           <div>
-            <ul>
-              <li> + </li>
-              <li> - </li>
-              <li> * </li>
-              <li> / </li>
-            </ul>
+            简单的运算
+          </div>
+        </el-card>
+      </el-col>
+
+      <el-col
+        :span="4"
+        :offset="1"
+      >
+        <el-card @click="openTool('/tool/format')">
+          <template #header>
+            <div class="card-header">
+              <span> Json 格式化 </span>
+            </div>
+          </template>
+
+          <div>
+            Json 格式化工具
           </div>
         </el-card>
       </el-col>
@@ -39,5 +51,5 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 </style>

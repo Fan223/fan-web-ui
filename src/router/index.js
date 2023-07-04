@@ -59,6 +59,11 @@ const router = createRouter({
       component: () => import('@/components/Preview.vue')
     },
     {
+      path: '/tool/calculate',
+      name: 'TOOL_CALCULATE',
+      component: () => import('@/views/tool/calculate/Calculate.vue')
+    },
+    {
       path: '/tool/format',
       name: 'TOOL_FORMAT',
       component: () => import('@/views/tool/Format.vue')

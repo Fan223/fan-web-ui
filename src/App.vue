@@ -12,8 +12,9 @@ export default {
 html,
 body {
   margin: 0;
+  height: 100%;
 }
 #app {
-  height: 100vh;
+  height: 100%;
 }
 </style>

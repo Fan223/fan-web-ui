@@ -46,10 +46,7 @@ const store = createStore({
       },
       data: []
     },
-    userInfo: {
-      username: 'Fan',
-      avatar: 'https://s2.loli.net/2023/04/21/rsBDYjpvRC7X3nE.jpg'
-    }
+    userInfo: {}
   }
 })
 

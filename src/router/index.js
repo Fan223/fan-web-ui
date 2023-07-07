@@ -75,7 +75,7 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
   let isRoute = store.state.navMenus.isRoute
 
-  if (to.path === '/login' || to.path.startsWith('/article/preview')) {
+  if (to.path === '/login' || to.path.startsWith('/article/preview') || to.path.startsWith('/tool/')) {
     next()
   } else if (!localStorage.getItem('JWT')) {
     ElMessage({
@@ -84,6 +84,12 @@ router.beforeEach((to, from, next) => {
     })
     next('/login')
   } else if (!isRoute) {
+    if (store.state.userInfo) {
+      axios.get('/fan-web/sys/user/getUser/' + localStorage.getItem('username')).then(response => {
+        store.state.userInfo = response.data.data
+      }).catch(() => { })
+    }
+
     axios.get('/fan-web/sys/menu/listNavMenus').then(response => {
       let menus = response.data.data
       store.commit('SET_TOP_MENUS', menus.top)

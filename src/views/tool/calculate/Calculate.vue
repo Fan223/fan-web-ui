@@ -1,15 +1,15 @@
 <template>
-  <div class="history">
-    <div style="padding: 20px;"> {{ history.value }} </div>
-  </div>
+  <el-container direction="vertical">
+    <el-input
+      v-model="current.value"
+      @keyup.enter="calculate"
+      placeholder="Please Input Your Equation..."
+    />
 
-  <el-input
-    v-model="current.value"
-    :autosize="{ minRows: 2, maxRows: 4 }"
-    type="textarea"
-    resize="none"
-    @keyup.enter="calculate"
-  />
+    <div class="history">
+      <div style="padding: 20px;"> {{ history.value }} </div>
+    </div>
+  </el-container>
 </template>
 
 <script>
@@ -41,7 +41,7 @@ export default {
           }
         }).then(response => {
           if (response.data.code === 200) {
-            history.value += current.value + 'result: ' + response.data.data + '\n'
+            history.value += current.value + '\nresult: ' + response.data.data + '\n'
             current.value = ''
           } else {
             ElMessage({
@@ -61,13 +61,21 @@ export default {
 </script>
 
 <style scoped>
+.el-container {
+  height: 100%;
+}
+.el-input {
+  height: 80px;
+  font-size: 16px;
+  border-bottom: 3px solid #0a0a0a;
+}
+:deep(.el-input__wrapper) {
+  box-shadow: none;
+}
 .history {
   width: 100%;
-  height: 80%;
-  box-shadow: 0 0 0 3px #0a0a0a;
+  height: 100%;
   white-space: pre-wrap;
-}
-.el-textarea {
-  margin-top: 20px;
+  font-size: 18px;
 }
 </style>

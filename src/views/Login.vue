@@ -66,6 +66,7 @@
 import { inject, reactive } from 'vue'
 import { ElMessage } from 'element-plus'
 import { useRouter } from 'vue-router'
+import { useStore } from 'vuex'
 
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
@@ -73,47 +74,41 @@ export default {
   setup() {
     const axios = inject('axios')
     const router = useRouter()
+    const store = useStore()
 
     let loginForm = reactive({
     })
 
     let captcha = reactive({
-      str: '',
       img: ''
     })
 
     function login() {
-      if (loginForm.captcha !== captcha.str) {
-        ElMessage({
-          message: '验证码错误',
-          type: 'error'
-        })
-        loginForm.captcha = ''
-        getCaptcha()
-      } else if ((loginForm.username === 'fan' && loginForm.password === 'fan223')
-        || (loginForm.username === 'tourists' && loginForm.password === 'tourists')) {
-        localStorage.setItem('JWT', 'JWT')
-        router.push('/').then(() => {
+      axios.post('/fan-web/api/login', loginForm).then(response => {
+        if (response.data.code === 200) {
           ElMessage({
-            message: '登录成功',
+            message: response.data.message,
             type: 'success'
           })
-        })
-      } else {
-        ElMessage({
-          message: '用户名或密码错误',
-          type: 'error'
-        })
-        loginForm.captcha = ''
-        getCaptcha()
-      }
+          store.state.userInfo = response.data.data
+          localStorage.setItem('JWT', 'JWT')
+          localStorage.setItem('username', response.data.data.username)
+          router.push('/')
+        } else {
+          ElMessage({
+            message: response.data.message,
+            type: 'error'
+          })
+          getCaptcha()
+        }
+      }).catch(() => { });
     }
 
     function getCaptcha() {
-      axios.get('/fan-web/api/getCaptcha').then((response) => {
-        captcha.str = response.data.data.captchaStr;
+      axios.get('/fan-web/api/getCaptcha').then(response => {
+        loginForm.token = response.data.data.token
         captcha.img = response.data.data.captchaImg;
-      });
+      }).catch(() => { });
     }
     getCaptcha()
 

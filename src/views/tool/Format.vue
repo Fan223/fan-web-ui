@@ -1,22 +1,51 @@
 <template>
-  <el-container>
-    <el-input
-      v-model="json.value"
-      autosize
-      type="textarea"
-      resize="none"
-    />
+  <el-container style="height: 100%;">
+    <el-container
+      direction="vertical"
+      v-if="collapse.value"
+      style="width: 100%; height: 100%;"
+      class="alignEndStyle"
+    >
+      <el-input
+        v-model="json.value"
+        autosize
+        type="textarea"
+        resize="none"
+        placeholder="Please Input Your Json..."
+      />
+
+      <el-button
+        dark
+        text
+        @click="(evnet) => {
+          formatJson()
+          this.unFocus(evnet)
+        }"
+        class="format-btn"
+      >
+        <b> Format </b>
+      </el-button>
+    </el-container>
 
     <el-button
-      text
       dark
-      @click="(evnet) => {
-        formatJson()
-        this.unFocus(evnet)
-      }"
+      text
+      v-if="collapse.value"
+      @click="collapse.value = !collapse.value"
+      class="collapse"
     >
-      <el-icon size="25">
+      <el-icon>
         <ArrowLeftBold />
+      </el-icon>
+    </el-button>
+    <el-button
+      dark
+      text
+      v-if="!collapse.value"
+      @click="collapse.value = !collapse.value"
+      class="collapse"
+    >
+      <el-icon>
         <ArrowRightBold />
       </el-icon>
     </el-button>
@@ -35,6 +64,9 @@ export default {
   name: 'Format',
   setup() {
     const axios = inject('axios')
+    let collapse = reactive({
+      value: true
+    });
 
     let json = reactive({
       value: ''
@@ -51,35 +83,41 @@ export default {
     }
 
     return {
-      json, format, formatJson
+      json, format, collapse, formatJson
     }
   }
 }
 </script>
 
 <style scoped>
-.el-container {
-  height: 100%;
-}
 :deep(.el-textarea__inner) {
-  height: 100% !important;
   box-shadow: none;
+  height: 93vh !important;
+  font-size: 16px;
+}
+.format-btn {
+  height: 50px;
+  border: none;
+  border-top: 3px solid #0a0a0a;
+}
+.format-btn:hover {
+  background-color: #1d2025 !important;
+}
+.collapse {
+  width: 50px;
+  height: 100%;
+  border: none;
+  border-left: 3px solid #0a0a0a;
+  border-right: 3px solid #0a0a0a;
+}
+.collapse:hover {
+  background-color: #1d2025 !important;
 }
 .format {
   height: 100%;
   width: 100%;
   white-space: pre-wrap;
-  color: #ddd;
   overflow: auto;
-}
-.el-button {
-  width: 50px;
-  height: 100%;
-  border: none;
-  border-left: 1px solid #0a0a0a;
-  border-right: 1px solid #0a0a0a;
-}
-.el-button:hover {
-  background-color: #1d2025 !important;
+  font-size: 16px;
 }
 </style>

@@ -39,8 +39,20 @@ html.dark {
   justify-content: center;
 }
 
+/* 水平底部对齐, 即右对齐 */
+.alignEndStyle {
+  display: flex;
+  justify-content: flex-end;
+}
+
 /* 垂直居中 */
 .verticalStyle {
   display: flex;
   align-items: center;
+}
+
+/* 垂直底部对齐 */
+.verticalBottomStyle {
+  display: flex;
+  align-items: flex-end;
 }

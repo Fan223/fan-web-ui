@@ -37,7 +37,7 @@ export default {
       if (current.value) {
         axios.get('/fan-web/tool/calculate', {
           params: {
-            expression: current.value
+            equation: current.value
           }
         }).then(response => {
           if (response.data.code === 200) {
